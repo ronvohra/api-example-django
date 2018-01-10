@@ -1,0 +1,20 @@
+
+{% extends 'kiosk-base.html' %}
+
+{% block content %}
+
+	<div style="text-align: center">
+		<h1>Thanks for checking in!</h1>
+		<br>
+		{% if patient_queue == 1 %}
+		<h3>There is {{ patient_queue }} patient queued ahead of you.</h3>
+		{% else %}
+		<h3>There are {{ patient_queue }} patients queued ahead of you.</h3>
+		{% endif %}
+		<br>
+		<h3>Dr. {{ user.last_name }} will call you in shortly.</h3>
+		<hr>
+	</div>
+	<button type='button' onclick="location.href='{% url 'checkin' %}'" class="btn btn-default">Done</button>
+
+{% endblock content %}

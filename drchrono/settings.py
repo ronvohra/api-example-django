@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drchrono',
-    'social.apps.django_app.default',
+    'social.apps.django_app.default'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -96,7 +96,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -109,3 +109,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SOCIAL_AUTH_DRCHRONO_KEY = os.getenv('SOCIAL_AUTH_DRCHRONO_KEY')
+SOCIAL_AUTH_DRCHRONO_SECRET = os.getenv('SOCIAL_AUTH_DRCHRONO_SECRET')
+LOGIN_REDIRECT_URL = '/'

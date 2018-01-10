@@ -1,8 +1,165 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>DrChrono Kiosk</title>
+
+    <!-- Bootstrap core CSS -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
+
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+
+
+  </head>
+
   <body>
-    <a href="{% url 'social:begin' 'drchrono' %}">
-      drchrono OAuth
-    </a>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Doctor Kiosk
+          </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          	<li class="active"><a href="{% url 'checkin' %}">Patient Check-In</a></li>
+          	<li class="active"><a href="{% url 'walkin' %}">Register as Walk-In</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href={% url "logout" %}>Logout <span class="sr-only">(current)</span></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+  	  	{% if user.is_authenticated %}
+	      	<div id='message_success'>
+	      	</div>
+			<h1>Welcome Dr. {{ user.last_name }}! </h1>
+			<div id='csrf_token_div' style="display: none">
+			{{ csrf_token }}
+			</div>
+			<br>
+			<div style='width:350px'>
+				<h3>Average Wait Time</h3>
+				<hr>
+			</div>
+			{% if average_wait_time %}
+				<div class='row'>
+					<div id='avg_wait_time_div' class="col-md-9">
+						<strong><h1> {{ average_wait_time }} </h1></strong>
+					</div>
+				</div>
+				<hr>
+			{% else %}
+				<h5>N/A</h5>
+			{% endif %}
+
+			<div style="width: 350px">
+				<h3>Today's Appointments</h3>
+				<hr>
+			</div>
+			{% if curr_appointments %}
+				<div id='doctor_id_div' style="display: none">
+					{{ curr_appointments.0.doctor_id }}
+				</div>
+				{% for appointment in curr_appointments %}
+					<div class='row'>
+						<div class="col-md-6">
+							<p><b>Patient Name:</b> {{ appointment.patient.first_name }} {{ appointment.patient.last_name }} </p>
+							<p><b>Scheduled at:</b> {{ appointment.scheduled_time|date:"D, M d Y, P" }}</p>
+						</div>
+						{% if appointment.status == 'Arrived' %}
+						<div id='{{ appointment.appointment_id }}_arrived'>
+							<div class="col-md-3">
+								<div class='time_diff' id='min_since_arrival' style="display: none">{{ appointment.arrival_time|timesince }}</div>
+								<div id='status_{{ appointment.appointment_id }}' class="alert alert-success" style="text-align: center">
+								  	<strong>Patient arrived!</strong>
+									<div id="timer_{{ appointment.appointment_id }}" class="badge">00:00</div>
+								</div>
+
+							</div>
+							<div class="col-md-2">
+								<button id="btn_{{ appointment.appointment_id }}" type="button" class="btn btn-success"
+                                        onclick="call_in_patient('{{ appointment.appointment_id }}', '{{ csrf_token }}')">See Patient</button>
+							</div>
+						</div>
+						{% elif appointment.status == 'In Session' %}
+						<div id='{{ appointment.appointment_id }}_arrived'>
+							<div class="col-md-3">
+								<div id='status_{{ appointment.appointment_id }}' class="alert alert-info" style="text-align: center">
+								  	<strong>In Progress</strong>
+								</div>
+
+							</div>
+							<div class="col-md-2">
+								<button id="btn_{{ appointment.appointment_id }}" type="button" class="btn btn-info"
+                                        onclick="appointment_completed('{{ appointment.appointment_id }}', '{{ csrf_token }}')">Done</button>
+							</div>
+						</div>
+						{% elif appointment.status == 'Complete' %}
+						<div id='{{ appointment.appointment_id }}_arrived'>
+							<div class="col-md-3">
+								<div id='status_{{ appointment.appointment_id }}' class="alert alert-warning" style="text-align: center">
+								  	<strong>Completed</strong>
+								</div>
+
+							</div>
+						</div>
+
+						{% else %}
+						<div id='{{ appointment.appointment_id }}_arrived'>
+
+						</div>
+
+						{% endif %}
+
+
+					</div>
+					<hr>
+				{% endfor %}
+
+			{% else %}
+				<h5>No appointments scheduled today!</h5>
+			{% endif %}
+
+		{% else %}
+			<h5>Please login to DrChrono!</h5>
+
+
+		{% endif %}
+
+    </div> <!-- /container -->
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+	<script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/timer.jquery.min.js' %}"></script>
+    <script src="{% static 'js/jstz.min.js' %}"></script>
+    <script src="{% static 'js/js.cookie.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+
   </body>
 </html>

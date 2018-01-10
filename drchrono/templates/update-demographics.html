@@ -1,0 +1,36 @@
+
+{% extends 'kiosk-base.html' %}
+
+{% block content %}
+	<div style="text-align: center">
+		<h1>Welcome to Dr. {{ user.last_name }}'s Clinic</h1>
+		<br>
+		<h3>Please review your information and make changes if necessary.</h3>
+		<hr>
+
+	</div>
+
+
+	<form id='update_demographics_form' action="{% url 'demographics' %}" method="post">
+	    {% csrf_token %}
+
+	    {% for field in demographics_form.visible_fields %}
+	    	<strong style="color:#b30505">{{ field.errors.as_text }}</strong>
+		    <div class="form-group">
+		        {{ field.label_tag }}
+		        {{ field }}
+		    </div>
+		{% endfor %}
+		{% for field in demographics_form.hidden_fields %}
+			{{ field }}
+		{% endfor %}
+
+		<button type="submit" class="btn btn-default">Update</button>
+
+	</form>
+
+
+
+{% endblock content %}
+
+

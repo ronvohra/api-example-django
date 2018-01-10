@@ -1,0 +1,47 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+	<head>
+	    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/kiosk.css' %}" rel="stylesheet">
+
+        <title>Kiosk</title>
+
+	</head>
+
+
+  	<body>
+  		{% block content %}
+		<div style="text-align: center">
+			<h1>Welcome to Dr. {{ user.last_name }}'s Clinic</h1>
+			<br>
+			<h3>Please enter your details for a walk-in appointment</h3>
+			<hr>
+
+		</div>
+
+
+		<form id='walkin_patient_form' action="{% url 'walkin' %}" method="post">
+		    {% csrf_token %}
+
+		    {% for field in walkin_form %}
+		    	<strong style="color:#b30505">{{ field.errors.as_text }}</strong>
+			    <div class="form-group">
+			        {{ field.label_tag }}
+			        {{ field }}
+			    </div>
+			{% endfor %}
+
+			<button type="submit" class="btn btn-default">Submit</button>
+		</form>
+		{% endblock content %}
+
+
+
+	<script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  	</body>
+</html>
+
+

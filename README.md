@@ -1,4 +1,8 @@
-# drchrono Hackathon
+# drchrono-kiosk
+
+This is a doctor dashboard and patient check-in kiosk built with Django and the 
+DrChrono API. The user is intended to be a doctor who can see his daily scheduled appointments
+
 
 ### Requirements
 - [pip](https://pip.pypa.io/en/stable/)
